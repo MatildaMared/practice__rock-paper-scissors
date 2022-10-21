@@ -116,7 +116,7 @@ struct ContentView: View {
                     .foregroundColor(.primary)
                     .font(.subheadline)
                     .background(.orange)
-                    .clipShape(RoundedRectangle(cornerRadius: 10)).shadow(radius: 8)
+                    .clipShape(RoundedRectangle(cornerRadius: 10)).shadow(radius: 8).opacity(0.8)
                 
                 Spacer()
                 
