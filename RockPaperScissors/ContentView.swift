@@ -8,9 +8,9 @@
 import SwiftUI
 
 enum Choice: String {
-    case rock = "rock"
-    case paper = "paper"
-    case scissors = "scissors"
+    case rock = "Rock 🪨"
+    case paper = "Paper 📄"
+    case scissors = "✂️ Scissors"
 }
 
 extension View {
@@ -36,6 +36,53 @@ struct ContentView: View {
     let choices = [Choice.rock, Choice.paper, Choice.scissors]
     @State private var currentChoice = Choice.rock
     @State private var totalScore = 0
+    @State private var showAlert = false
+    @State private var alertTitle = ""
+    @State private var alertMessage = ""
+    
+    func resetState() {
+        totalScore = 0
+        alertTitle = ""
+        alertMessage = ""
+    }
+    
+    func makeGuess(_ userGuess: Choice) {
+        let computerGuess = choices[Int.random(in: 0...2)]
+        print(computerGuess)
+        var hasWon: Bool
+        
+        switch computerGuess {
+        case .scissors:
+            if userGuess == .rock {
+                hasWon = true
+            } else {
+                hasWon = false
+            }
+        case .rock:
+            if userGuess == .paper {
+                hasWon = true
+            } else {
+                hasWon = false
+            }
+        case .paper:
+            if userGuess == .scissors {
+                hasWon = true
+            } else {
+                hasWon = false
+            }
+        }
+        
+        if hasWon {
+            alertTitle = "Correct!"
+            alertMessage = "You chose \(userGuess) and the computer chose \(String(describing: computerGuess)) which means you won! Keep up the good work 🥳"
+            totalScore += 1
+        } else {
+            alertTitle = "Incorrect!"
+            alertMessage = "You chose \(userGuess) and the computer chose \(String(describing: computerGuess)) which means you lost.. 😞 Better luck next time!"
+        }
+        
+        showAlert = true
+    }
     
     var body: some View {
         ZStack {
@@ -49,26 +96,42 @@ struct ContentView: View {
                     .font(.largeTitle).fontWeight(.light).foregroundStyle(.primary)
                 
                 Button("Rock 🪨") {
-                    
+                    makeGuess(.rock)
                 }.buttonStyles()
                 
                 Button("Paper 📄") {
-                    
+                    makeGuess(.paper)
                 }.buttonStyles()
                 
                 Button("Scissors ✂️") {
-                    
+                    makeGuess(.scissors)
                 }.buttonStyles()
                 
                 Text("Total Score: \(totalScore)")
                     .padding()
                     .font(.subheadline)
                 
+                Button("Reset", action: resetState)
+                    .padding()
+                    .foregroundColor(.primary)
+                    .font(.subheadline)
+                    .background(.orange)
+                    .clipShape(RoundedRectangle(cornerRadius: 10)).shadow(radius: 8)
+                
                 Spacer()
                 
                 Spacer()
             }
             .padding()
+        }
+        .alert(alertTitle, isPresented: $showAlert) {
+            Button("Continue") {
+                
+            }
+        } message: {
+            VStack {
+                Text(alertMessage)
+            }
         }
     }
 }
